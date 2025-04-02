@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Buses from './pages/Buses';
 import Fares from './pages/Fares';
 import BusRoutes from './pages/BusRoutes'; // Renamed to avoid conflict with Router
+import Feedback from './pages/Feedback';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/buses" element={<Buses />} />
         <Route path="/fares" element={<Fares />} />
         <Route path="/routes" element={<BusRoutes />} /> 
+        <Route path="/feedback" element={<Feedback />} /> 
       </Routes>
     </Router>
   );

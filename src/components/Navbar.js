@@ -13,6 +13,7 @@ function ColorSchemesExample() {
             <Nav.Link href="buses">Buses</Nav.Link>
             <Nav.Link href="routes">Routes</Nav.Link>
             <Nav.Link href="fares">Fares</Nav.Link>
+            <Nav.Link href="feedback">Feedback</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
