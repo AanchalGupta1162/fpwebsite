@@ -1,7 +1,13 @@
 import React from 'react'
+import ColorSchemesExample from '../components/Navbar'
 
-export const Fares = () => {
+function Fares() {
   return (
-    <div>Fares</div>
+
+    <div>
+        <div><ColorSchemesExample/></div>
+    </div>
   )
 }
+
+export default Fares;

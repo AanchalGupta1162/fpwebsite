@@ -1,5 +1,5 @@
 import Carousel from 'react-bootstrap/Carousel';
-
+import './FullPageCarousel.css';
 function UncontrolledExample() {
   return (
     <Carousel>

@@ -1,7 +1,13 @@
 import React from 'react'
+import ColorSchemesExample from '../components/Navbar'
 
-export const Buses = () => {
+const Buses = () => {
   return (
-    <div>Buses</div>
+    
+    <div>
+        <div><ColorSchemesExample/></div>
+    </div>
   )
 }
+
+export default Buses;

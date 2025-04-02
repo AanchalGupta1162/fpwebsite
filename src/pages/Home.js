@@ -2,7 +2,7 @@ import React from 'react'
 import ColorSchemesExample from '../components/Navbar'
 import UncontrolledExample from '../components/Carousel'
 
-export const Home = () => {
+const Home = () => {
   return (
     <div><ColorSchemesExample/>
     <div>
@@ -12,3 +12,5 @@ export const Home = () => {
     
   )
 }
+
+export default Home;

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Buses from './pages/Buses';
 import Fares from './pages/Fares';
-import BusRoutes from './pages/Routes'; // Renamed to avoid conflict with Router
+import BusRoutes from './pages/BusRoutes'; // Renamed to avoid conflict with Router
 
 function App() {
   return (
