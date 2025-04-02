@@ -1,23 +1,40 @@
+import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { Link } from 'react-router-dom'; // Import Link
+import './Navbar.css'; // Create Navbar.css for custom styles
 
 function ColorSchemesExample() {
   return (
     <>
-
-      <Navbar bg="primary" data-bs-theme="dark">
-        <Container>
-          <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="buses">Buses</Nav.Link>
-            <Nav.Link href="routes">Routes</Nav.Link>
-            <Nav.Link href="fares">Fares</Nav.Link>
-            <Nav.Link href="feedback">Feedback</Nav.Link>
-          </Nav>
+      <Navbar bg="dark" variant="dark" expand="lg" className="navbar">
+        <Container className="navbar-container">
+          <Navbar.Brand as={Link} to="/" className="navbar-brand">
+            NaviBus
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto navbar-nav">
+              <Nav.Link as={Link} to="/" className="navbar-link">
+                Home
+              </Nav.Link>
+              <Nav.Link as={Link} to="/buses" className="navbar-link">
+                Buses
+              </Nav.Link>
+              <Nav.Link as={Link} to="/routes" className="navbar-link">
+                Routes
+              </Nav.Link>
+              <Nav.Link as={Link} to="/fares" className="navbar-link">
+                Fares
+              </Nav.Link>
+              <Nav.Link as={Link} to="/feedback" className="navbar-link">
+                Feedback
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
-
     </>
   );
 }

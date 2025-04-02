@@ -5,6 +5,8 @@ import Buses from './pages/Buses';
 import Fares from './pages/Fares';
 import BusRoutes from './pages/BusRoutes'; // Renamed to avoid conflict with Router
 import Feedback from './pages/Feedback';
+import Footer from './components/Footer';
+
 
 function App() {
   return (
@@ -16,6 +18,7 @@ function App() {
         <Route path="/routes" element={<BusRoutes />} /> 
         <Route path="/feedback" element={<Feedback />} /> 
       </Routes>
+      <Footer/>
     </Router>
   );
 }
