@@ -13,7 +13,7 @@ function Feedback() {
 
   const fetchFeedback = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/feedback/');
+      const response = await fetch('http://localhost:8000/feedback/feedback/');
       if (!response.ok) throw new Error("Failed to fetch");
       const data = await response.json();
       setFeedbackList(data);
@@ -30,7 +30,7 @@ function Feedback() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/feedback/', {
+      const response = await fetch('http://localhost:8000/feedback/feedback/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ feedback }),
