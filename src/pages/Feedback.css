@@ -1,0 +1,45 @@
+/* Reset styles */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Wrapper to ensure content takes full height */
+.feedback-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures full page height */
+}
+
+/* Ensures feedback content expands to push footer down */
+.feedback-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Feedback wrapper - keeps background only here */
+.feedback-wrapper {
+    width: 60%;
+    max-width: 800px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 50px auto;
+    background: linear-gradient(to bottom right, #f7f7f7, #d4d4d4);
+}
+
+/* Footer is always at the bottom */
+.footer {
+    width: 100%;
+    background: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: auto; /* Ensures footer stays at the bottom */
+}
