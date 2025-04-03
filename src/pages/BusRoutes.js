@@ -14,8 +14,8 @@ function BusRoutes() {
     last_bus_mon_sat: "",
     last_bus_sunday: "",
     journey_time: "",
-    frequency_mon_sat: "",
-    frequency_sunday: "",
+    frequency_mon_sat: "N/A", // Default to avoid blank error
+    frequency_sunday: "N/A", // Default to avoid blank error
     fare: "",
   });
 
@@ -36,12 +36,23 @@ function BusRoutes() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const formattedData = {
+      ...formData,
+      route_length: parseFloat(formData.route_length) || 0,
+      fare: parseInt(formData.fare) || 0,
+    };
+
+    console.log("Submitting Data:", formattedData); // Debugging
+
     try {
-      const response = await fetch("http://localhost:8000/api/busroutes/", {
+      const response = await fetch("http://localhost:8000/api/busroutes/add/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formattedData),
       });
+
+      const data = await response.json();
 
       if (response.ok) {
         alert("Bus route added successfully!");
@@ -54,13 +65,14 @@ function BusRoutes() {
           last_bus_mon_sat: "",
           last_bus_sunday: "",
           journey_time: "",
-          frequency_mon_sat: "",
-          frequency_sunday: "",
+          frequency_mon_sat: "N/A",
+          frequency_sunday: "N/A",
           fare: "",
         });
         fetchRoutes();
       } else {
-        alert("Failed to add bus route");
+        console.error("Failed to add bus route:", data);
+        alert(`Error: ${JSON.stringify(data)}`);
       }
     } catch (error) {
       console.error("Error submitting bus route:", error);
@@ -122,110 +134,35 @@ function BusRoutes() {
         {/* Form to Add New Bus Route */}
         <h3 className="text-center mt-4">Add New Bus Route</h3>
         <Form onSubmit={handleSubmit} className="w-75 mx-auto">
-          <Form.Group className="mb-2">
-            <Form.Label>Bus Number</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter bus number"
-              value={formData.bus_no}
-              onChange={(e) => setFormData({ ...formData, bus_no: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Destination</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter destination"
-              value={formData.destination}
-              onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Route Length (km)</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter route length"
-              value={formData.route_length}
-              onChange={(e) => setFormData({ ...formData, route_length: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>First Bus (Mon-Sat)</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter first bus timing"
-              value={formData.first_bus_mon_sat}
-              onChange={(e) => setFormData({ ...formData, first_bus_mon_sat: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>First Bus (Sunday)</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter first bus timing"
-              value={formData.first_bus_sunday}
-              onChange={(e) => setFormData({ ...formData, first_bus_sunday: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Last Bus (Mon-Sat)</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter last bus timing"
-              value={formData.last_bus_mon_sat}
-              onChange={(e) => setFormData({ ...formData, last_bus_mon_sat: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Last Bus (Sunday)</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter last bus timing"
-              value={formData.last_bus_sunday}
-              onChange={(e) => setFormData({ ...formData, last_bus_sunday: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Journey Time (min)</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter journey time"
-              value={formData.journey_time}
-              onChange={(e) => setFormData({ ...formData, journey_time: e.target.value })}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-2">
-            <Form.Label>Fare (₹)</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Enter fare"
-              value={formData.fare}
-              onChange={(e) => setFormData({ ...formData, fare: e.target.value })}
-              required
-            />
-          </Form.Group>
+          {[
+            { label: "Bus Number", field: "bus_no", type: "text" },
+            { label: "Destination", field: "destination", type: "text" },
+            { label: "Route Length (km)", field: "route_length", type: "number" },
+            { label: "First Bus (Mon-Sat)", field: "first_bus_mon_sat", type: "text" },
+            { label: "First Bus (Sunday)", field: "first_bus_sunday", type: "text" },
+            { label: "Last Bus (Mon-Sat)", field: "last_bus_mon_sat", type: "text" },
+            { label: "Last Bus (Sunday)", field: "last_bus_sunday", type: "text" },
+            { label: "Journey Time (min)", field: "journey_time", type: "number" },
+            { label: "Frequency (Mon-Sat)", field: "frequency_mon_sat", type: "text" },
+            { label: "Frequency (Sunday)", field: "frequency_sunday", type: "text" },
+            { label: "Fare (₹)", field: "fare", type: "number" },
+          ].map(({ label, field, type }) => (
+            <Form.Group className="mb-2" key={field}>
+              <Form.Label>{label}</Form.Label>
+              <Form.Control
+                type={type}
+                placeholder={`Enter ${label.toLowerCase()}`}
+                value={formData[field]}
+                onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+                required
+              />
+            </Form.Group>
+          ))}
 
           {/* Submit Button Centered */}
           <div className="d-flex justify-content-center mt-3">
             <Button variant="primary" type="submit">
               Add Route
-            <br/>
             </Button>
           </div>
         </Form>
