@@ -7,6 +7,7 @@ import { Dropdown, DropdownButton } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./MapStyles.css";
 import axios from "axios";
+import Navbar from "../components/Navbar"; // ✅ Import Navbar component
 
 // 📍 Icons
 const busIcon = new L.Icon({
@@ -24,7 +25,7 @@ const userIcon = new L.Icon({
 });
 
 // 🗺️ OpenRouteService API Key
-const ORS_API_KEY = "5b3ce3597851110001cf62488a5c47eda3ea4c92888480af9d809cc8"; // 🔹 Replace with a valid API key
+const ORS_API_KEY = "5b3ce3597851110001cf62488a5c47eda3ea4c92888480af9d809cc8"; // Replace with a valid API key
 
 // 🚌 Hardcoded Bus Data
 const busRoutes = [
@@ -94,58 +95,61 @@ const MapComponent = () => {
   };
 
   return (
-    <div style={{ height: "500px", width: "100%", position: "relative" }}>
-      {/* 🔽 Dropdown for Bus Selection */}
-      <DropdownButton
-        id="custom-dropdown"
-        title={`🚌 ${selectedBus.route_no}: ${selectedBus.source.name} → ${selectedBus.destination.name}`}
-        variant="info"
-        className="beautiful-dropdown"
-      >
-        {busRoutes.map((bus) => (
-          <Dropdown.Item key={bus.route_no} onClick={() => setSelectedBus(bus)} className="dropdown-item-custom">
-            🚌 {bus.route_no}: {bus.source.name} → {bus.destination.name}
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
+    <>
+      <Navbar /> {/* ✅ Added Navbar at the top */}
+      <div style={{ height: "500px", width: "100%", position: "relative" }}>
+        {/* 🔽 Dropdown for Bus Selection */}
+        <DropdownButton
+          id="custom-dropdown"
+          title={`🚌 ${selectedBus.route_no}: ${selectedBus.source.name} → ${selectedBus.destination.name}`}
+          variant="info"
+          className="beautiful-dropdown"
+        >
+          {busRoutes.map((bus) => (
+            <Dropdown.Item key={bus.route_no} onClick={() => setSelectedBus(bus)} className="dropdown-item-custom">
+              🚌 {bus.route_no}: {bus.source.name} → {bus.destination.name}
+            </Dropdown.Item>
+          ))}
+        </DropdownButton>
 
-      {/* 🗺️ Map */}
-      <MapContainer center={userLocation || [19.1, 72.99]} zoom={12} style={{ height: "100%", width: "100%" }}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
+        {/* 🗺️ Map */}
+        <MapContainer center={userLocation || [19.1, 72.99]} zoom={12} style={{ height: "100%", width: "100%" }}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
 
-        {/* Show Selected Bus Markers */}
-        {selectedBus && (
-          <>
-            {/* Source Marker */}
-            <Marker position={[selectedBus.source.latitude, selectedBus.source.longitude]} icon={busIcon}>
-              <Popup>🚌 {selectedBus.route_no}: {selectedBus.source.name} → {selectedBus.destination.name}</Popup>
+          {/* Show Selected Bus Markers */}
+          {selectedBus && (
+            <>
+              {/* Source Marker */}
+              <Marker position={[selectedBus.source.latitude, selectedBus.source.longitude]} icon={busIcon}>
+                <Popup>🚌 {selectedBus.route_no}: {selectedBus.source.name} → {selectedBus.destination.name}</Popup>
+              </Marker>
+
+              {/* Destination Marker */}
+              <Marker position={[selectedBus.destination.latitude, selectedBus.destination.longitude]} icon={busIcon}>
+                <Popup>🚌 {selectedBus.route_no}: {selectedBus.source.name} → {selectedBus.destination.name}</Popup>
+              </Marker>
+            </>
+          )}
+
+          {/* Draw Route from API Response */}
+          {routePath.length > 0 ? (
+            <Polyline positions={routePath} color="blue" weight={5} />
+          ) : (
+            console.warn("No route available") // Logs if no route is available
+          )}
+
+          {/* Show User Location */}
+          {userLocation && (
+            <Marker position={userLocation} icon={userIcon}>
+              <Popup>📍 You are here</Popup>
             </Marker>
-
-            {/* Destination Marker */}
-            <Marker position={[selectedBus.destination.latitude, selectedBus.destination.longitude]} icon={busIcon}>
-              <Popup>🚌 {selectedBus.route_no}: {selectedBus.source.name} → {selectedBus.destination.name}</Popup>
-            </Marker>
-          </>
-        )}
-
-        {/* Draw Route from API Response */}
-        {routePath.length > 0 ? (
-          <Polyline positions={routePath} color="blue" weight={5} />
-        ) : (
-          console.warn("No route available") // Logs if no route is available
-        )}
-
-        {/* Show User Location */}
-        {userLocation && (
-          <Marker position={userLocation} icon={userIcon}>
-            <Popup>📍 You are here</Popup>
-          </Marker>
-        )}
-      </MapContainer>
-    </div>
+          )}
+        </MapContainer>
+      </div>
+    </>
   );
 };
 
