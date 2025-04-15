@@ -14,8 +14,8 @@ function BusRoutes() {
     last_bus_mon_sat: "",
     last_bus_sunday: "",
     journey_time: "",
-    frequency_mon_sat: "N/A", // Default to avoid blank error
-    frequency_sunday: "N/A", // Default to avoid blank error
+    frequency_mon_sat: "N/A",
+    frequency_sunday: "N/A",
     fare: "",
   });
 
@@ -34,16 +34,64 @@ function BusRoutes() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this bus route?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/busroutes/${id}/`, {
+        method: "DELETE",
+      });
+
+      if (response.status === 204) {
+        alert("Bus route deleted successfully.");
+        fetchRoutes();
+      } else {
+        const data = await response.json();
+        alert(`Failed to delete bus route: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting bus route:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    const isPositiveNumber = (value) => !isNaN(value) && Number(value) >= 0;
+    const validFrequency = (value) =>
+      value === "N/A" || (/^\d+$/.test(value) && parseInt(value) >= 0);
+
+    if (!isPositiveNumber(formData.route_length)) {
+      alert("Route Length must be a positive number.");
+      return;
+    }
+
+    if (!isPositiveNumber(formData.journey_time)) {
+      alert("Journey Time must be a positive number.");
+      return;
+    }
+
+    if (!isPositiveNumber(formData.fare)) {
+      alert("Fare must be a positive number.");
+      return;
+    }
+
+    if (!validFrequency(formData.frequency_mon_sat)) {
+      alert("Frequency (Mon-Sat) must be a positive number or 'N/A'.");
+      return;
+    }
+
+    if (!validFrequency(formData.frequency_sunday)) {
+      alert("Frequency (Sunday) must be a positive number or 'N/A'.");
+      return;
+    }
+
     const formattedData = {
       ...formData,
-      route_length: parseFloat(formData.route_length) || 0,
-      fare: parseInt(formData.fare) || 0,
+      route_length: parseFloat(formData.route_length),
+      journey_time: parseFloat(formData.journey_time),
+      fare: parseInt(formData.fare),
     };
-
-    console.log("Submitting Data:", formattedData); // Debugging
 
     try {
       const response = await fetch("http://localhost:8000/api/busroutes/add/", {
@@ -85,7 +133,6 @@ function BusRoutes() {
       <Container className="mt-5 pt-5">
         <h2 className="text-center mb-4">Bus Routes</h2>
 
-        {/* Table for Displaying Bus Routes */}
         <Table striped bordered hover responsive className="text-center">
           <thead className="thead-dark">
             <tr>
@@ -101,12 +148,13 @@ function BusRoutes() {
               <th>Frequency (Mon-Sat)</th>
               <th>Frequency (Sunday)</th>
               <th>Fare (₹)</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {busRoutes.length > 0 ? (
               busRoutes.map((route, index) => (
-                <tr key={index}>
+                <tr key={route.id}>
                   <td>{index + 1}</td>
                   <td>{route.bus_no}</td>
                   <td>{route.destination}</td>
@@ -119,11 +167,20 @@ function BusRoutes() {
                   <td>{route.frequency_mon_sat}</td>
                   <td>{route.frequency_sunday}</td>
                   <td>{route.fare}</td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleDelete(route.id)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="12" className="text-muted text-center">
+                <td colSpan="13" className="text-muted text-center">
                   No bus routes available.
                 </td>
               </tr>
@@ -131,7 +188,6 @@ function BusRoutes() {
           </tbody>
         </Table>
 
-        {/* Form to Add New Bus Route */}
         <h3 className="text-center mt-4">Add New Bus Route</h3>
         <Form onSubmit={handleSubmit} className="w-75 mx-auto">
           {[
@@ -153,13 +209,14 @@ function BusRoutes() {
                 type={type}
                 placeholder={`Enter ${label.toLowerCase()}`}
                 value={formData[field]}
-                onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, [field]: e.target.value })
+                }
                 required
               />
             </Form.Group>
           ))}
 
-          {/* Submit Button Centered */}
           <div className="d-flex justify-content-center mt-3">
             <Button variant="primary" type="submit">
               Add Route
